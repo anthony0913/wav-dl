@@ -18,7 +18,7 @@ class YoutubeDownloader:
                     video_urls.append(video_info)
         return video_urls
 
-    def download_video(self, video_id):
+    def download_video(self, video_id, title):
         video_url = f'https://www.youtube.com/watch?v={video_id}'
         ydl_opts = {'outtmpl': 'temp_video.webm', 'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
                     'ignoreerrors': True, 'quiet': True}
@@ -30,9 +30,11 @@ class YoutubeDownloader:
             os.remove('temp_video.webm.mp4')
             return False
 
-        print(f'Converting video with ID {video_id} to WAV format')
-        time.sleep(2)
-        os.system('ffmpeg -i temp_video.webm.mp4 -acodec pcm_s16le -ar 44100 -ac 2 ~/Music/output{}.wav'.format(self.counter))
+        output_dir = os.path.join(os.path.expanduser('~'), 'Music')
+        title = title.replace('/', '_')  # replace forward slashes with underscores
+        output_path = os.path.normpath(os.path.join(output_dir, f'{title}.wav'))  # sanitize the path
+        os.makedirs(output_dir, exist_ok=True)  # create directory if it doesn't exist
+        os.system(f'ffmpeg -y -i temp_video.webm.mp4 -acodec pcm_s16le -ar 44100 -ac 2 "{output_path}"')
         os.remove('temp_video.webm.mp4')
         return True
 
@@ -40,13 +42,12 @@ class YoutubeDownloader:
         video_urls = self.get_playlist_videos(playlist_url)
         self.counter = 1
         for video_info in video_urls:
-            if self.download_video(video_info['id']):
+            if self.download_video(video_info['id'], video_info['title']):
                 print('Downloaded video {} of {}'.format(self.counter, len(video_urls)))
                 self.counter += 1
             else:
                 print('Error downloading video with ID {}'.format(video_info['id']))
         print('Finished downloading playlist.')
-        print('Saved to ~/Music')
 
 def main():
     downloader = YoutubeDownloader()
