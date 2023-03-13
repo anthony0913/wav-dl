@@ -7,7 +7,7 @@ wav-dl is a tool for downloading and converting audio files from YouTube playlis
 
 To use wav-dl, download the latest release from the wav-dl GitHub repository and extract the contents of the archive. Then, navigate to the directory containing the executable file and run the following command:
 
-`./downloader` 
+`./wav-dl` 
 
 You will be prompted with the playlist link and directory to save the WAV files to. wav-dl will automatically download each video in the playlist and convert it to a WAV audio file, with the file name based on the video title. See the examples below for what an example input might look like.
 
@@ -16,7 +16,7 @@ coming soon!
 
 ### Linux
 ```
-$ ./downloader
+$ ./wav-dl
 Enter YouTube playlist URL: https://www.youtube.com/playlist?list=PLRGzS-dvI7Zz0AuAqnv0yo9bZSIQHutwt
 Enter output directory path: ~/Music
 ```
