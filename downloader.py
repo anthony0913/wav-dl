@@ -34,7 +34,10 @@ class YoutubeDownloader:
         title = title.replace('/', '_')  # replace forward slashes with underscores
         output_path = os.path.normpath(os.path.join(output_dir, f'{title}.wav'))  # sanitize the path
         os.makedirs(output_dir, exist_ok=True)  # create directory if it doesn't exist
-        os.system(f'ffmpeg -y -i temp_video.webm.mp4 -acodec pcm_s16le -ar 44100 -ac 2 "{output_path}"')
+
+        # Modify this line to add -loglevel panic option to ffmpeg command
+        os.system(f'ffmpeg -loglevel panic -y -i temp_video.webm.mp4 -acodec pcm_s16le -ar 44100 -ac 2 "{output_path}"')
+
         os.remove('temp_video.webm.mp4')
         return True
 
@@ -53,7 +56,6 @@ def main():
     downloader = YoutubeDownloader()
     playlist_url = input('Enter YouTube playlist URL: ')
     downloader.download_playlist(playlist_url)
-    print("Download complete.")
 
 main()
 
