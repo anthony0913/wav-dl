@@ -1,22 +1,24 @@
-import youtube_dl
+import yt_dlp
 import os
 
 class YoutubeDownloader:
     def get_playlist_videos(self, playlist_url):
         ydl_opts = {'ignoreerrors': True, 'quiet': True}
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             playlist_dict = ydl.extract_info(playlist_url, download=False)
             video_urls = []
             for video in playlist_dict['entries']:
-                video_urls.append(video['url'])
+                if 'url' in video:
+                    video_urls.append(video['url'])
+        print(video_urls)
         return video_urls
 
     def download_video(self, video_url):
         ydl_opts = {'outtmpl': 'temp_video.%(ext)s', 'ignoreerrors': True, 'quiet': True}
         try:
-            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([video_url])
-        except youtube_dl.DownloadError:
+        except yt_dlp.utils.DownloadError:
             os.remove('temp_video.mp4')
             return False
 
@@ -39,7 +41,8 @@ def main():
     downloader = YoutubeDownloader()
     playlist_url = input('Enter YouTube playlist URL: ')
     downloader.download_playlist(playlist_url)
-    input('Download complete. Press Enter to exit.')
+    print("Download complete.")
+    #input('Download complete. Press Enter to exit.')
 
 if __name__ == '__main__':
     main()
